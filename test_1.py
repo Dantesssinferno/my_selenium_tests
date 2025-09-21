@@ -1,4 +1,6 @@
 import time
+from idlelib.colorizer import color_config
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -35,25 +37,48 @@ elif BROWSER == 'firefox':
 
 else:
     raise ValueError("BROWSER должен быть 'chrome' или 'firefox'")
-
-driver.get('https://www.saucedemo.com/')
+base_url = 'https://www.saucedemo.com/'
+driver.get(base_url)
 driver.maximize_window()
 
+login_standard_user = 'standard_user'
+login_locked_out_user = 'locked_out_user'
+login_problem_user = 'problem_user'
+login_performance_glitch_user = 'performance_glitch_user'
+login_error_user = 'error_user'
+login_visual_user = 'visual_user'
+password_universal = 'secret_sauce'
 
+# Ищем поле логин и вводим, логин
 user_name = driver.find_element(By.XPATH,"//input[@name='user-name']") # ID XPATH
-user_name.send_keys("standard_user")
-
+user_name.send_keys(login_standard_user)
+print('Input Login : success')
+# Ищем поле пароль и вводим, пароль
 user_pass = driver.find_element(By.XPATH, "//input[@id='password']")
-user_pass.send_keys("secret_sauce")
-
-
+user_pass.send_keys(password_universal)
+print('Input password : success')
+# Ищем кнопку логин и кликаем кнопку, ставлю слипы, для того чтобы, увидеть как проходит тест
 time.sleep(2)
 button_login = driver.find_element(By.XPATH, "//input[@id='login-button']")
 button_login.click()
+print('Login button clicked : success')
 time.sleep(3) # чтобы увидеть результат
-# driver.quit()  # при detach=True у Chrome можно вызвать driver.quit() позже вручную
+# Проверяем что мы попали в каталог продуктов
+products_text = driver.find_element(By.XPATH, "//span[@class='title']")
+# Ожидаемый результат
+actual_result = products_text.text
+# Фактический результат
+assert_result = 'Products'
+print(actual_result)
+# Сравниваем ожидаемый результат с фактическим результатом
+assert actual_result == assert_result
+print("Passed")
 
-
-
+# Проверяем, что после авторизации мы находимся на ожидаемой странице
+assert_url = "https://www.saucedemo.com/inventory.html"
+get_url = driver.current_url
+print(get_url)
+assert assert_url == get_url, "ERROR, URL doesn't match"
+print("Passed")
 
 
