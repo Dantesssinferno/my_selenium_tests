@@ -80,5 +80,8 @@ assert_result_text = 'Epic sadface: Username and password do not match any user 
 assert actual_value_warring_text == assert_result_text
 print("Negative login test: Passed")
 
+driver.refresh() # обновление страницы
+
+
 
 
