@@ -1,6 +1,7 @@
 import time
 from idlelib.colorizer import color_config
 from selenium import webdriver
+from selenium.webdriver import Keys
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.by import By
@@ -16,7 +17,7 @@ login_problem_user = 'problem_user'
 login_performance_glitch_user = 'performance_glitch_user'
 login_error_user = 'error_user'
 login_visual_user = 'visual_user'
-password_universal = 'secret_sauc' # сломан пароль для негативного тестирования
+password_universal = 'secret_sauce'
 
 if BROWSER == 'chrome': # запускаем Chrome
     chrome_options = ChromeOptions()
@@ -67,33 +68,15 @@ print('Input Login : success')
 user_pass = driver.find_element(By.XPATH, "//input[@id='password']")
 user_pass.send_keys(password_universal)
 print('Input password : success')
+user_pass.send_keys(Keys.RETURN) # используется для замены клика по кнопке Login
 
-# Ищем кнопку логин и кликаем кнопку, ставлю слипы, для того чтобы, увидеть как проходит тест
-time.sleep(2)
-button_login = driver.find_element(By.XPATH, "//input[@id='login-button']")
-button_login.click()
-print('Login button clicked : success')
-time.sleep(3) # чтобы увидеть результат
-
-# Проверяем корректность текста ошибки
-warring_text = driver.find_element(By.XPATH, "//h3[@data-test='error']") # нашли сообщение об ошибке логина
-actual_value_warring_text = warring_text.text # сохранили текст ошибки логина в переменную
-assert_result_text = 'Epic sadface: Username and password do not match any user in this service' # сохранили ожидаемый результат в переменную
-assert actual_value_warring_text == assert_result_text # сравниваем фактический результат с ожидаемым
-print("Negative password test: Passed")
-
-# Проверяем, что мы не перешли на страницу каталога
-assert_url = 'https://www.saucedemo.com/inventory.html'
-actual_url = driver.current_url
-print(actual_url)
-assert actual_url != assert_url
-print("Negative URL test: Passed")
-
-# Проверяем, что всплыло сообщение об ошибке, которое нужно закрыть на крестик
-error_button = driver.find_element(By.XPATH, "//button[@data-test='error-button']")
-actual_button = driver.find_element(By.XPATH, "//button[@data-test='error-button']")
-error_button.click()
-assert error_button == actual_button
-print("Clicked error button: Passed")
-
+# Ищем фильтр, кликаем на него, выбираем второй элемент и нажимаем Enter
+filter = driver.find_element(By.XPATH, "//select[@data-test='product-sort-container']")
+time.sleep(3)
+filter.click()
+print('Click Filter: success')
+time.sleep(3)
+filter.send_keys(Keys.DOWN)
+time.sleep(3)
+filter.send_keys(Keys.RETURN)
 

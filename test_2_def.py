@@ -39,7 +39,6 @@ def browser_run():
         # chrome_options.add_argument('--headless') # запуск теста в безголовом режиме, не запуская окно браузера
         # 🔑 запуск в гостевом режиме
         chrome_options.add_argument('--guest')
-
         # 🔑 отключаем переводчик и выставляем язык
         prefs = {
             "translate":{"enable": False},
@@ -170,6 +169,5 @@ if failures:
         print(f" - {u}: {reason}")
 else:
     print("\nИтоги: все кейсы пройдены ✅")
-
-
-
+# оставляем браузер открытым из-за detach; при желании закрыть — раскомментировать
+# driver.quit()
