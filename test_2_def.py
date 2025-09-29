@@ -1,4 +1,5 @@
 import time
+from datetime import datetime, UTC
 from idlelib.colorizer import color_config
 from selenium import webdriver
 from selenium.common import NoSuchElementException
@@ -8,7 +9,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.ie.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 
 # ==== ПЕРЕМЕННЫЕ ====
 base_url = 'https://www.saucedemo.com/'
@@ -100,13 +100,19 @@ def input_credentials(user_name):
     user_pass.send_keys(password_universal)
     print('Input password : success')
 
-def click_login():
+def click_login(user_name):
     # Ищем кнопку логин и кликаем кнопку, ставлю слипы, для того чтобы, увидеть как проходит тест
     time.sleep(1) # чтобы увидеть результат
     button_login = driver.find_element(By.XPATH, login_button)
     button_login.click()
     print('Login button clicked : success')
     time.sleep(2) # чтобы увидеть результат
+    # Делаем скриншот логина с генерацией уникального имени
+    now_date = datetime.now(UTC).strftime("%Y.%m.%d.%H.%M.%S")
+    safe_screenshot = "".join(c if c.isalnum() or c in ('-','_') else '_' for c in user_name)
+    name_screenshot = f"screenshot_{safe_screenshot}_{now_date}" + ".png"
+    driver.save_screenshot('C:\\Users\\Maxim Starostenco\\PycharmProjects\\my_selenium_tests\\screen\\' + name_screenshot)
+    print("Screenshot saved: success {name_screenshot}")
 
 def check_negative(expected_text):
     warring_text = driver.find_element(By.XPATH, warring_pop_up)
@@ -135,7 +141,7 @@ def run_case(user_name, expect_error, expected_text):
     print(f'===========Test user: {user_name}===========')
     open_login_page()
     input_credentials(user_name)
-    click_login()
+    click_login(user_name)  # передаем имя пользователя
 
     try:
         if expect_error:
