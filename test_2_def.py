@@ -110,9 +110,9 @@ def click_login(user_name):
     # Делаем скриншот логина с генерацией уникального имени
     now_date = datetime.now(UTC).strftime("%Y.%m.%d.%H.%M.%S")
     safe_screenshot = "".join(c if c.isalnum() or c in ('-','_') else '_' for c in user_name)
-    name_screenshot = f"screenshot_{safe_screenshot}_{now_date}" + ".png"
+    name_screenshot = f"screenshot_{safe_screenshot}_{now_date}.png"
     driver.save_screenshot('C:\\Users\\Maxim Starostenco\\PycharmProjects\\my_selenium_tests\\screen\\' + name_screenshot)
-    print("Screenshot saved: success {name_screenshot}")
+    print(f"Screenshot saved: success {name_screenshot}")
 
 def check_negative(expected_text):
     warring_text = driver.find_element(By.XPATH, warring_pop_up)
