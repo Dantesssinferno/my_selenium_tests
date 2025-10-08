@@ -1,7 +1,4 @@
 import time
-from idlelib.colorizer import color_config
-
-from cffi.model import char_array_type
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -9,10 +6,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-"""INFO browser"""
-BROWSER = 'chrome'  # поменяй на "chrome" чтобы запустить Chrome
+# ===================== BROWSER SETUP =====================
+BROWSER = 'firefox'  # поменяй на "firefox", чтобы запустить Firefox
 
-if BROWSER == 'chrome':  # запускаем Chrome
+if BROWSER == 'chrome':
     chrome_options = ChromeOptions()
     chrome_options.add_experimental_option('detach', True)
     # chrome_options.add_argument('--headless')
@@ -40,36 +37,6 @@ else:
 base_url = 'https://www.saucedemo.com/'
 driver.get(base_url)
 
-"""INFO users"""
-login_standard_user = 'standard_user'
-login_locked_out_user = 'locked_out_user'
-login_problem_user = 'problem_user'
-login_performance_glitch_user = 'performance_glitch_user'
-login_error_user = 'error_user'
-login_visual_user = 'visual_user'
-"""INFO users password"""
-password_universal = 'secret_sauce'
-"""INFO burger buttons"""
-burger_button = "//button[@id='react-burger-menu-btn']"
-burger_about_button = "//a[@id='about_sidebar_link']"
-"""INFO login_fields"""
-login_field = "//input[@name='user-name']"
-pass_field = "//input[@id='password']"
-"""INFO login button"""
-login_button = "//input[@id='login-button']"
-"""INFO product_1"""
-product_1 = "//a[@id='item_4_title_link']"
-price_prod_1 = "//div[@class='inventory_item_price'][1]"
-"""SELECT product_1"""
-select_prod_1 = "//button[@id='add-to-cart-sauce-labs-backpack']"
-"""Cart"""
-cart_loc = "//a[@class='shopping_cart_link']"
-# Сохраняем копию строкового XPath ДО объявления одноимённой функции
-product_1_xpath_copy = product_1
-"""INFO cart product_1"""
-cart_product_1 = "//div[@class='inventory_item_name'][1]"
-cart_price_prod_1 = "//div[@class='inventory_item_price'][1]"
-
 try:
     driver.set_window_size(1440, 860)
 except Exception:
@@ -77,79 +44,202 @@ except Exception:
 
 wait = WebDriverWait(driver, 10)
 
-# Ищем поле логин и вводим логин
-def user_login(login_standard_user, login_field):
-    wait.until(EC.presence_of_element_located((By.XPATH, login_field)))
-    user_name = driver.find_element(By.XPATH, login_field)
-    user_name.send_keys(login_standard_user)
-    print('Input Login : success')
+# ===================== TEST DATA =====================
+# Users
+login_standard_user = 'standard_user'
+login_locked_out_user = 'locked_out_user'
+login_problem_user = 'problem_user'
+login_performance_glitch_user = 'performance_glitch_user'
+login_error_user = 'error_user'
+login_visual_user = 'visual_user'
 
-# Ищем поле пароль и вводим пароль
-def user_password(password_universal, pass_field):
-    wait.until(EC.presence_of_element_located((By.XPATH, pass_field)))
-    user_pass = driver.find_element(By.XPATH, pass_field)
-    user_pass.send_keys(password_universal)
-    print('Input password : success')
+# Password
+password_universal = 'secret_sauce'
 
-# Ждём кнопку логина и кликаем
-def button_login(login_button):
-    wait.until(EC.element_to_be_clickable((By.XPATH, login_button)))
-    driver.find_element(By.XPATH, login_button).click()  # <-- реальный клик
-    print('Login button clicked : success')
+# XPaths (логичные имена с суффиксом _xpath)
+burger_button_xpath = "//button[@id='react-burger-menu-btn']"
+burger_about_button_xpath = "//a[@id='about_sidebar_link']"
+
+login_field_xpath = "//input[@name='user-name']"
+pass_field_xpath = "//input[@id='password']"
+login_button_xpath = "//input[@id='login-button']"
+
+product_1_xpath = "//a[@id='item_4_title_link']"
+price_prod_1_xpath = "//div[@class='inventory_item_price'][1]"
+
+select_prod_1_xpath = "//button[@id='add-to-cart-sauce-labs-backpack']"
+cart_link_xpath = "//a[@class='shopping_cart_link']"
+
+cart_product_1_xpath = "//div[@class='inventory_item_name'][1]"
+cart_price_prod_1_xpath = "//div[@class='inventory_item_price'][1]"
+
+cart_checkout_xpath = "//button[@id='checkout']"
+
+first_name_xpath = "//input[@id='first-name']"
+last_name_xpath = "//input[@id='last-name']"
+postal_code_xpath = "//input[@id='postal-code']"
+
+first_name_value = "Maxim"
+last_name_value = "Starostenko"
+postal_code_value = "MD-5400"
+
+continue_xpath = "//input[@id='continue']"
+
+checkout_overview_title_xpath = "//div[contains(text(), 'Sauce Labs Backpack')]"
+checkout_overview_price_xpath = "//div[@data-test='inventory-item-price']"
+
+item_total_xpath = "//div[@class='summary_subtotal_label']"
+
+# ===================== HELPERS =====================
+def user_login(user_login_value: str, login_input_xpath: str) -> None:
+    wait.until(EC.presence_of_element_located((By.XPATH, login_input_xpath)))
+    user_name_el = driver.find_element(By.XPATH, login_input_xpath)
+    user_name_el.send_keys(user_login_value)
+    print('Шаг: 1: Input Login : success')
+
+def user_password(password_value: str, pass_input_xpath: str) -> None:
+    wait.until(EC.presence_of_element_located((By.XPATH, pass_input_xpath)))
+    user_pass_el = driver.find_element(By.XPATH, pass_input_xpath)
+    user_pass_el.send_keys(password_value)
+    print('Шаг: 1.1: Input password : success')
+
+def button_login(login_btn_xpath: str) -> None:
+    wait.until(EC.element_to_be_clickable((By.XPATH, login_btn_xpath)))
+    driver.find_element(By.XPATH, login_btn_xpath).click()
+    print('Шаг: 1.2: Login button clicked : success')
     time.sleep(1)
 
-# Находим товар и его цену
-def product_1(product_1, price_prod_1):
-    # product_1 здесь — строка XPATH
-    wait.until(EC.presence_of_element_located((By.XPATH, product_1)))
-    find_prod_1 = driver.find_element(By.XPATH, product_1)         # <-- 2 позиционных аргумента
-    value_prod_1 = find_prod_1.text                                # <-- читаем у WebElement
-    print(value_prod_1)
-    wait.until(EC.presence_of_element_located((By.XPATH, price_prod_1)))
-    find_price_prod_1 = driver.find_element(By.XPATH, price_prod_1) # <-- 2 позиционных аргумента
-    value_price_prod_1 = find_price_prod_1.text
-    print(value_price_prod_1)
-    # >>> ВОЗВРАЩАЕМ имя и цену из каталога <<<
-    return value_prod_1, value_price_prod_1
+def read_product_1(title_xpath: str, price_xpath: str) -> tuple[str, str]:
+    wait.until(EC.presence_of_element_located((By.XPATH, title_xpath)))
+    title_el = driver.find_element(By.XPATH, title_xpath)
+    value_title = title_el.text
+    print(f"Шаг: 2: {value_title}")
 
-def select_prod(select_prod_1):
-    wait.until(EC.element_to_be_clickable((By.XPATH, select_prod_1)))
-    driver.find_element(By.XPATH, select_prod_1).click()
-    print("Selected prod: Passed")
+    wait.until(EC.presence_of_element_located((By.XPATH, price_xpath)))
+    price_el = driver.find_element(By.XPATH, price_xpath)
+    value_price = price_el.text
+    print(f"Шаг: 2.1: {value_price}")
 
-def cart(cart_loc):
-    wait.until(EC.element_to_be_clickable((By.XPATH, cart_loc)))
-    driver.find_element(By.XPATH, cart_loc).click()
-    print("Enter cart: Passed")
+    return value_title, value_price
 
-def cart_info(cart_product_1, cart_price_prod_1):
-    # product_1 здесь — строка XPATH
-    wait.until(EC.presence_of_element_located((By.XPATH, cart_product_1)))
-    cart_find_prod_1 = driver.find_element(By.XPATH, cart_product_1)         # <-- 2 позиционных аргумента
-    cart_value_prod_1 = cart_find_prod_1.text                                # <-- читаем у WebElement
-    print(cart_value_prod_1)
-    wait.until(EC.presence_of_element_located((By.XPATH, cart_price_prod_1)))
-    cart_find_price_prod_1 = driver.find_element(By.XPATH, cart_price_prod_1) # <-- 2 позиционных аргумента
-    cart_value_price_prod_1 = cart_find_price_prod_1.text
-    print(cart_value_price_prod_1)
-    # >>> ВОЗВРАЩАЕМ имя и цену из корзины <<<
-    return cart_value_prod_1, cart_value_price_prod_1
+def select_prod(select_btn_xpath: str) -> None:
+    wait.until(EC.element_to_be_clickable((By.XPATH, select_btn_xpath)))
+    driver.find_element(By.XPATH, select_btn_xpath).click()
+    print(f"Шаг: 3: Selected prod: Passed")
 
-def run_tests(login_standard_user, password_universal, product_1):
-    user_login(login_standard_user, login_field)
-    user_password(password_universal, pass_field)
-    button_login(login_button)
-    # Передаём строковый XPath через сохранённую копию
-    name_catalog, price_catalog = product_1(product_1_xpath_copy, price_prod_1)
-    select_prod(select_prod_1)
-    cart(cart_loc)
-    name_cart, price_cart = cart_info(cart_product_1, cart_price_prod_1)
-    # 4) СРАВНЕНИЕ — ВОТ ЗДЕСЬ СТАВИМ ASSERT
+def open_cart(cart_xpath: str) -> None:
+    wait.until(EC.element_to_be_clickable((By.XPATH, cart_xpath)))
+    driver.find_element(By.XPATH, cart_xpath).click()
+    print(f"Шаг: 4: Enter cart: Passed")
+
+def cart_info(title_xpath: str, price_xpath: str) -> tuple[str, str]:
+    wait.until(EC.presence_of_element_located((By.XPATH, title_xpath)))
+    cart_title_el = driver.find_element(By.XPATH, title_xpath)
+    cart_title = cart_title_el.text
+    print(f"Шаг: 5: {cart_title}")
+
+    wait.until(EC.presence_of_element_located((By.XPATH, price_xpath)))
+    cart_price_el = driver.find_element(By.XPATH, price_xpath)
+    cart_price = cart_price_el.text
+    print(f"Шаг: 6: {cart_price}")
+
+    return cart_title, cart_price
+
+def checkout_cart(cart_checkout_xpath: str) -> None:
+    wait.until(EC.element_to_be_clickable((By.XPATH, cart_checkout_xpath)))
+    checkout_button_el = driver.find_element(By.XPATH, cart_checkout_xpath).click()
+    print(f"Шаг: 7: Checkout button clicked : success")
+    time.sleep(1)
+
+def select_user_info(first_name_xpath, last_name_xpath, postal_code_xpath, continue_xpath):
+    wait.until(EC.visibility_of_element_located((By.XPATH, first_name_xpath)))
+    first_name_el = driver.find_element(By.XPATH, first_name_xpath)
+    first_name_el.send_keys(first_name_value) # Maxim
+    print(f"Шаг: 8.1: input first name: success")
+    time.sleep(1)
+    wait.until(EC.visibility_of_element_located((By.XPATH, last_name_xpath)))
+    last_name_el = driver.find_element(By.XPATH, last_name_xpath)
+    last_name_el.send_keys(last_name_value) # Starostenko
+    print(f"Шаг: 8.2: input last name: success")
+    time.sleep(1)
+    wait.until(EC.visibility_of_element_located((By.XPATH, postal_code_xpath)))
+    postal_code_el = driver.find_element(By.XPATH, postal_code_xpath)
+    postal_code_el.send_keys(postal_code_value) # MD-5400
+    print(f"Шаг: 8.3: input postal code: success")
+    time.sleep(1)
+    wait.until(EC.element_to_be_clickable((By.XPATH, continue_xpath)))
+    continue_el = driver.find_element(By.XPATH, continue_xpath).click()
+    print(f"Шаг: 8.4: Continue button clicked: success")
+    # Ждём переход на шаг обзора (checkout-step-two)
+    wait.until(EC.url_contains("checkout-step-two.html"))
+
+def checkout_overview(checkout_overview_title_xpath: str, checkout_overview_price_xpath: str) -> tuple[str, str]:
+    wait.until(EC.presence_of_element_located((By.XPATH, checkout_overview_title_xpath)))
+    checkout_overview_title_el = driver.find_element(By.XPATH, checkout_overview_title_xpath)
+    checkout_overview_title_text = checkout_overview_title_el.text
+    print(f"Шаг: 9.1: {checkout_overview_title_text}")
+
+    wait.until(EC.presence_of_element_located((By.XPATH, checkout_overview_price_xpath)))
+    checkout_overview_price_el = driver.find_element(By.XPATH, checkout_overview_price_xpath)
+    checkout_overview_price_text = checkout_overview_price_el.text
+    print(f"Шаг: 9.2: {checkout_overview_price_text}")
+
+    return checkout_overview_title_text, checkout_overview_price_text
+
+def item_total_sum(item_total_xpath: str) -> str:
+    """Возвращает строку вида 'Item total: $29.99' и печатает её."""
+    wait.until(EC.presence_of_element_located((By.XPATH, item_total_xpath)))
+    total_sum_el = driver.find_element(By.XPATH, item_total_xpath)
+    total_sum_text = total_sum_el.text # ✅ читаем .text у элемента, а не у строки XPath
+    print(f"Шаг: 10: {total_sum_text}")
+    return total_sum_text
+
+# ===================== TEST FLOW =====================
+def run_tests() -> None:
+    # 1) Логин/пароль
+    user_login(login_standard_user, login_field_xpath)
+    user_password(password_universal, pass_field_xpath)
+    button_login(login_button_xpath)
+
+    # 2) Чтение товара и цены из каталога
+    name_catalog, price_catalog = read_product_1(product_1_xpath, price_prod_1_xpath)
+
+    # 3) Добавление в корзину и переход в корзину
+    select_prod(select_prod_1_xpath)
+    open_cart(cart_link_xpath)
+
+    # 4) Чтение товара и цены из корзины
+    name_cart, price_cart = cart_info(cart_product_1_xpath, cart_price_prod_1_xpath)
+
+    # 5) Сравнение (assert'ы с выводом)
     assert name_catalog.strip() == name_cart.strip(), \
-    f"Имя товара не совпало: '{name_catalog}' vs '{name_cart}'"
-    print("Name catalog = name cart: Passed")
+        f"Имя товара не совпало: '{name_catalog}' vs '{name_cart}'"
+    print(f"Шаг: 6.1: Name catalog = name cart: Passed")
+
     assert price_catalog.strip() == price_cart.strip(), \
-    f"Цена товара не совпала: '{price_catalog}' vs '{price_cart}'"
-    print("Price catalog = price cart: Passed")
-# Запуск
-run_tests(login_standard_user, password_universal, product_1)
+        f"Цена товара не совпала: '{price_catalog}' vs '{price_cart}'"
+    print(f"Шаг: 6.2: Price catalog = price cart: Passed")
+
+    # 6) Нажать Checkout
+    checkout_cart(cart_checkout_xpath)
+
+    # 7) Ввести имя, фамилию, почтовый индекс и перейти дальше
+    select_user_info(first_name_xpath, last_name_xpath, postal_code_xpath, continue_xpath)
+
+    # 8) Checkout: Overview повторная проверка позиции и цены
+    overview_title, overview_price  = checkout_overview(checkout_overview_title_xpath, checkout_overview_price_xpath)
+
+    # 9) Вывод на печать итоговой суммы по позициям без учета налога
+    total_summ_text = item_total_sum(item_total_xpath)
+
+    # 10) Сравнение (assert'ы с выводом)
+    assert name_cart.strip() == overview_title.strip(), \
+        f"Имя товара не совпало: '{name_cart}' vs '{overview_title}'"
+    print(f"Шаг: 10.1: Name cart = name checkout overview: Passed")
+
+    assert price_cart.strip() == overview_price.strip(), \
+        f"Цена товара не совпала: '{price_cart}' vs '{overview_price}'"
+    print(f"Шаг: 10.2: Price cart = price checkout overview: Passed")
+
+# ===================== ENTRYPOINT =====================
+run_tests()
