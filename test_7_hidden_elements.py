@@ -8,6 +8,7 @@ from selenium.webdriver.ie.webdriver import WebDriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 BROWSER = 'chrome' # поменяй на "chrome" чтобы запустить Chrome
 login_standard_user = 'standard_user'
 login_locked_out_user = 'locked_out_user'
@@ -59,7 +60,6 @@ try:
 except Exception:
     pass
 
-
 # Ищем поле логин и вводим, логин
 user_name = driver.find_element(By.XPATH,"//input[@name='user-name']") # ID XPATH
 user_name.send_keys(login_standard_user)
@@ -107,7 +107,7 @@ time.sleep(3)
 link_about.click()
 # --- сразу после link_about.click() ---
 # Если открылась новая вкладка — переключимся
-time.sleep(1)  # оставляем твой стиль; можно убрать, если не нужен
+time.sleep(1)
 handles = driver.window_handles
 if len(handles) > 1:
     driver.switch_to.window(handles[-1])  # на последнюю (новую) вкладку
@@ -134,3 +134,12 @@ current_url = driver.current_url
 assert current_url.startswith("https://saucelabs.com/"), \
     f"Ожидался переход на saucelabs.com, но сейчас: {current_url}"
 print("Проверка url About > Sauce Labs: Passed")
+
+
+driver.back()
+print("Go Back: Clicked")
+time.sleep(3)
+
+driver.forward()
+print("Forvard: Clicked")
+time.sleep(3)
