@@ -33,3 +33,17 @@ echo venv/>> .gitignore
 echo __pycache__/>> .gitignore
 echo *.log>> .gitignore
 echo .idea/>> .gitignore
+
+Add-Content .gitignore "chrome/"
+Add-Content .gitignore "drivers/"
+Add-Content .gitignore "*.dll"
+Add-Content .gitignore "*.exe"
+Add-Content .gitignore "*.zip"
+Add-Content .gitignore "*.7z"
+Add-Content .gitignore "*.tar"
+Add-Content .gitignore "*.gz"
+Add-Content .gitignore "*.msi"
+Add-Content .gitignore "venv/"
+Add-Content .gitignore "__pycache__/"
+Add-Content .gitignore "*.log"
+Add-Content .gitignore ".idea/"
