@@ -36,7 +36,7 @@ def click_check_boxes(check_box_3_xpath: str) -> None:
     for xpath, name in checkboxes:
         element = wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
         element.click()
-        time.sleep(1)
+        time.sleep(3)
         if element.is_selected():
             print(f"{name}: Clicked ✅")
         else:
