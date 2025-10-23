@@ -29,7 +29,7 @@ rb_span_result_xpath = "//span[contains(text(), 'Yes')]"
 def click_check_boxes() -> None:
     radiobutton_yes = wait.until(EC.element_to_be_clickable((By.XPATH, rb_yes_xpath)))
     radiobutton_yes.click()
-    print("Radiobutton Yes: clicked")
+    print(not radiobutton_yes.is_selected())
 
     # проверка результата
     span_actual_txt = wait.until(EC.visibility_of_element_located((By.XPATH, rb_span_result_xpath))).text
