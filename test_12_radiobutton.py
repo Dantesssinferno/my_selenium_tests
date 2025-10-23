@@ -32,7 +32,7 @@ def click_check_boxes() -> None:
     print("Radiobutton Yes: clicked")
 
     # проверка результата
-    span_txt = wait.until(EC.visibility_of_element_located((By.XPATH, rb_span_result_xpath))).text
-    assert span_txt == "Yes", f"Ожидал 'Yes', получил '{span_txt}'"
+    span_actual_txt = wait.until(EC.visibility_of_element_located((By.XPATH, rb_span_result_xpath))).text
+    assert span_actual_txt == "Yes", f"Ожидал 'Yes', получил '{span_actual_txt}'"
     print("Assert: result == 'Yes' : Passed")
 click_check_boxes()
