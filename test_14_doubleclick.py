@@ -22,6 +22,7 @@ driver.get('https://demoqa.com/buttons')
 driver.set_window_size(1440, 860)
 wait = WebDriverWait(driver, 10)
 action = ActionChains(driver)
+
 # ===================== LOCATORS =====================
 bt_double_click_xpath = "//button[@id='doubleClickBtn']"
 double_click_txt_xpath = "//p[@id='doubleClickMessage']"
@@ -31,19 +32,18 @@ right_click_txt_xpath = "//p[@id='rightClickMessage']"
 # ===================== STEPS =====================
 def double_click() -> None:
      double = wait.until(EC.element_to_be_clickable((By.XPATH, bt_double_click_xpath)))
-     action.double_click(double).perform()
-     print("Double click: Passed")
+     action.double_click(double).perform() # double_click(double) - помещаем переменную с локатором
+     print("Double click: Passed") # perform() - для сохранения результатов
 
      # проверка двойного нажатия
      double_txt = wait.until(EC.visibility_of_element_located((By.XPATH, double_click_txt_xpath))).text
      assert double_txt == "You have done a double click", f"Ожидал 'Yes', получил '{double_txt}'"
      print("Assert: result == 'You have done a double click' : Passed")
 
-
 def right_click() -> None:
     right_click = wait.until(EC.element_to_be_clickable((By.XPATH, right_click_xpath)))
-    action.context_click(right_click).perform()
-    print("Right click: Passed")
+    action.context_click(right_click).perform() # context_click(right_click)print - для клика право клавишей
+    print("Right click: Passed") # .perform() - для сохранения результатов
 
     # проверка клика правой клавишей мыши
     right_click = wait.until(EC.visibility_of_element_located((By.XPATH, right_click_txt_xpath))).text
