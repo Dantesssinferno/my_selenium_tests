@@ -2,9 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service)
 
-driver = webdriver.Chrome()
 driver.get("https://www.google.com")
-print(driver.title)
+print("✅ Открыта страница:", driver.title)
 driver.quit()
