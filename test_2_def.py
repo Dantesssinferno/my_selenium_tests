@@ -1,14 +1,10 @@
 import time
 from datetime import datetime, UTC
-from idlelib.colorizer import color_config
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.by import By
-from selenium.webdriver.ie.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 # ==== ПЕРЕМЕННЫЕ ====
 base_url = 'https://www.saucedemo.com/'
