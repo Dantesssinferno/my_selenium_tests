@@ -12,16 +12,16 @@ from selenium.webdriver.support.wait import WebDriverWait
 chrome_options = webdriver.ChromeOptions()
 # оставить окно открытым после завершения скрипта (удобно при обучении)
 chrome_options.add_experimental_option('detach', True)
-# # chrome_options.add_argument('--headless') # запуск теста в безголовом режиме, не запуская окно браузера
-# # 🔑 запуск в гостевом режиме
-# chrome_options.add_argument('--guest')
-# # 🔑 отключаем переводчик и выставляем язык
-# prefs = {
-#     "translate": {"enable": False},
-#     "intl.accept_languages": "en,en_US"
-# }
-# chrome_options.add_experimental_option("prefs", prefs)
-# chrome_options.add_argument("--lang=en")
+# chrome_options.add_argument('--headless') # запуск теста в безголовом режиме, не запуская окно браузера
+# 🔑 запуск в гостевом режиме
+chrome_options.add_argument('--guest')
+# 🔑 отключаем переводчик и выставляем язык
+prefs = {
+     "translate": {"enable": False},
+     "intl.accept_languages": "en,en_US"
+ }
+chrome_options.add_experimental_option("prefs", prefs)
+chrome_options.add_argument("--lang=en")
 g = Service()
 driver = webdriver.Chrome(options=chrome_options, service=g)
 driver.get("https://demoqa.com/browser-windows")
@@ -37,26 +37,34 @@ window_button = "//button[@id='windowButton']"
 window_2_title = "//h1[@id='sampleHeading']"
 #=============================================================STEPS=====================================================
 def click_new_tab():
+    # Нахожу кнопку Tab button и нажимаю ее
     new_tab_click = wait.until(EC.element_to_be_clickable((By.XPATH, tab_button)))
     new_tab_click.click()
+    # Вывожу на печать, если локатор найден
     print(f"ШАГ.1 NEW TAB BUTTON: LOCATED AND CLICKED")
     time.sleep(3)
+    # Вывожу на печать, текущий URL
     print(f"ШАГ.1.1 {driver.current_url}")
-
+    # Нахожу и читаю заголовок вкладки 1
     header_page_1 = wait.until(EC.presence_of_element_located((By.XPATH, header_1))).text
     page_1_txt = header_page_1
+    # Вывожу на печать, заголовок вкладки 1
     print(f"ШАГ.2 TEXT ON PAGE 1: {page_1_txt}")
-
+    # Говорю driver переключиться на вкладку 2
     driver.switch_to.window(driver.window_handles[1])
     time.sleep(3)
+    # Говорю driver переключиться на вкладку 2
     print(f"ШАГ.2.1 {driver.current_url}")
-
+    # Нахожу заголовок вкладки 2
     header_page_2 = wait.until(EC.presence_of_element_located((By.XPATH, header_2))).text
     page_2_txt = header_page_2
+    # Нахожу заголовок вкладки 2
     print(f"ШАГ.3 TEXT ON PAGE 2: {page_2_txt}")
-
+    # Вывожу на печать, заголовок вкладки 2
     driver.switch_to.window(driver.window_handles[0])
+    # Вывожу на печать, текущий URL
     print(f"ШАГ.3.1 {driver.current_url}")
+    # Возвращаю заголовок вкладки 1
     return page_1_txt
 
 
