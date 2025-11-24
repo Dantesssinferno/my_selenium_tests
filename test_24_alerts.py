@@ -8,7 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 
 
-#=============================================================BROWSERSETUP==============================================
+#=============================================================BROWSER_SETUP==============================================
 chrome_options = webdriver.ChromeOptions()
 # оставить окно открытым после завершения скрипта (удобно при обучении)
 chrome_options.add_experimental_option('detach', True)
@@ -69,6 +69,7 @@ def click_alert_confirm(action: str):
     time.sleep(1)
     # 2. Получаем объект alert один раз
     alert_confirm = driver.switch_to.alert
+    driver.switch_to.alert.send_keys("test")
     # 3. Ветвление логики по выбранному действию
     if action == "accept":
         alert_confirm.accept()
