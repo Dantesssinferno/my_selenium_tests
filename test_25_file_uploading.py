@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.chrome.service import Service
 #=============================================================BROWSER_SETUP==============================================
+# инициилизируем chrome_options
 chrome_options = webdriver.ChromeOptions()
 # оставить окно открытым после завершения скрипта (удобно при обучении)
 chrome_options.add_experimental_option('detach', True)
