@@ -2,7 +2,6 @@ import glob
 import os.path
 import time
 
-from faker.providers.ssn.el_GR import tin_checksum
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
