@@ -1,9 +1,7 @@
-import time
-from selenium.webdriver.support import expected_conditions as EC
 from selenium import webdriver
-from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 #=============================================================BROWSER_SETUP==============================================
 # инициилизируем chrome_options
@@ -24,7 +22,7 @@ driver = webdriver.Chrome(options=chrome_options, service=g)
 driver.get("https://demoqa.com/dynamic-properties")
 wait = WebDriverWait(driver, 10)
 #driver.maximize_window()
-# waiting = driver.implicitly_wait(3)
+# waiting = driver.implicitly_wait(3) # неявное ожидание
 #=============================================================LOCATORS==================================================
 button_will_enable_5_sec_xpath = "//button[@id='visibleAftero']"
 button_visible_after_5_sec_xpath = "//button[@id='visibleAfter']"
