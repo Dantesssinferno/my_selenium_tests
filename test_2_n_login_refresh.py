@@ -1,25 +1,19 @@
 import time
-from idlelib.colorizer import color_config
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.webdriver.common.by import By
-from selenium.webdriver.ie.webdriver import WebDriver
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
-
-BROWSER = 'chrome' # поменяй на "chrome" чтобы запустить Chrome
+#=================================================BrowserSetUP============================================
+BROWSER = 'chrome'
 
 if BROWSER == 'chrome': # запускаем Chrome
     chrome_options = ChromeOptions()
-    # оставить окно открытым после завершения скрипта (удобно при обучении)
+    # оставить окно открытым после завершения скрипта
     chrome_options.add_experimental_option('detach', True)
-    # chrome_options.add_argument('--headless') # запуск теста в безголовом режиме, не запуская окно браузера
     # 🔑 запуск в гостевом режиме
     chrome_options.add_argument('--guest')
-
     # 🔑 отключаем переводчик и выставляем язык
     prefs = {
         "translate":{"enable": False},
@@ -29,20 +23,6 @@ if BROWSER == 'chrome': # запускаем Chrome
     chrome_options.add_argument("--lang=en")
     driver = webdriver.Chrome(options=chrome_options)
 
-elif BROWSER == 'firefox':
-    firefox_options = FirefoxOptions()
-    # Firefox не имеет аналога detach; окно остаётся, пока процесс жив
-    # отключаем встроенный переводчик Firefox
-    firefox_options.set_preference("browser.translations.enable", False)
-    firefox_options.set_preference("intl.accept_languages", "en-US, en")
-    # ВАЖНО: headless и размер окна — ДО создания драйвера
-    # firefox_options.add_argument("-headless")  # включаем headless
-    firefox_options.add_argument("-width=1440")
-    firefox_options.add_argument("-height=860")
-    driver = webdriver.Firefox(options=firefox_options)
-
-else:
-    raise ValueError("BROWSER должен быть 'chrome' или 'firefox'")
 base_url = 'https://www.saucedemo.com/'
 driver.get(base_url)
 # В headless maximize_window может быть бесполезен/ломать — используем set_window_size на всякий случай
@@ -50,19 +30,21 @@ try:
     driver.set_window_size(1440, 860)
 except Exception:
     pass
-login_standard_user = 'standard_use' # сломан login_standard_user для негативного тестирования
+
+#==================================================TestData===============================================
+login_standard_user = 'standard_user'
 login_locked_out_user = 'locked_out_user'
 login_problem_user = 'problem_user'
-login_performance_glitch_user = 'performance_glitch_user'
+login_performance_glitch_user = 'performance_glitch_user' # 1 click(), затем пауза 5 сек
 login_error_user = 'error_user'
 login_visual_user = 'visual_user'
 password_universal = 'secret_sauce'
 
 # Какие результаты ждем от каждого юзера
-test_cases = [
+test_cases = [ # создаю list [] содержащий кортежи ()
     #(логин, ожидается_ошибка(True/False), текст ошибки если есть)
-    (login_standard_user, True, 'Epic sadface: Username and password do not match any user in this service'),
-    (login_locked_out_user, True, 'Epic sadface: Sorry, this user has been locked out.'),
+    (login_standard_user, False, ''),
+    (login_locked_out_user, False, 'Epic sadface: Sorry, this user has been locked out.'),
     (login_problem_user, False, ''),
     (login_performance_glitch_user, False, ''),
     (login_error_user, False, ''),
@@ -71,6 +53,7 @@ test_cases = [
 
 failures = []
 
+# в цикле перебираю всех юзеров и показываю по шагам результаты выполнения теста
 for user_name, expect_error, expected_text in test_cases:
     print(f'===========Test user: {user_name}===========')
     driver.get(base_url)
